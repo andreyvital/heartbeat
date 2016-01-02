@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+if [ "$1" == "pi" ]; then
+  make beat-arm
+  scp dist/beat_arm pi@$2:/home/pi/beat
+  rm -rf dist/beat_arm
+  exit
+fi
+
 make build
 tar -czvf heartbeat.tar.gz dist/heartbeat
 rsync -azv heartbeat.tar.gz root@centaurwarchief.com:/home/ubuntu/heartbeat.centaurwarchief.com
