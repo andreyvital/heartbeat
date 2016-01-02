@@ -21,6 +21,20 @@ type Tracker struct {
 	isConsideredAlive IsConsideredAlive
 }
 
+// IsHostBeingTracked tells if a host is being tracked
+func (t *Tracker) IsHostBeingTracked(host string) bool {
+	for _, event := range t.events {
+		switch event.(type) {
+		case HostWasTracked:
+			if event.(HostWasTracked).Host == host {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
 // ToPossiblyAlive returns a map of hosts which are possibly alive
 func (t *Tracker) ToPossiblyAlive() map[string]ip.InternalPublicPair {
 	m := make(map[string]ip.InternalPublicPair, 0)
