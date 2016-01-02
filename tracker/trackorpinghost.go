@@ -8,7 +8,7 @@ import (
 	"github.com/CentaurWarchief/heartbeat/ip"
 )
 
-type TrackOrPingRequestPayload struct {
+type trackOrPingRequestPayload struct {
 	Host     string `json:"host"`
 	Internal string `json:"internal"`
 	Public   string `json:"public"`
@@ -16,7 +16,7 @@ type TrackOrPingRequestPayload struct {
 
 func TrackOrPingHost(t *Tracker) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var payload TrackOrPingRequestPayload
+		var payload trackOrPingRequestPayload
 
 		body, err := ioutil.ReadAll(r.Body)
 

@@ -66,7 +66,7 @@ func (t *Tracker) CountOfTracked() int {
 	for _, event := range t.events {
 		switch event.(type) {
 		case HostWasTracked:
-			count += 1
+			count++
 		}
 	}
 
