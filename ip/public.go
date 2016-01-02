@@ -3,17 +3,16 @@ package ip
 import "github.com/miekg/dns"
 
 const (
-	openDNSIPv4 = "208.67.222.222:53"
+	OpenDNSIPv4 = "208.67.222.222:53"
 )
 
-// Public returns the external/public IP address of the host network
 func Public() string {
 	c := dns.Client{}
 
 	m := dns.Msg{}
 	m.SetQuestion("myip.opendns.com.", dns.TypeA)
 
-	r, _, err := c.Exchange(&m, openDNSIPv4)
+	r, _, err := c.Exchange(&m, OpenDNSIPv4)
 
 	if err != nil {
 		return ""

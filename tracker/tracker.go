@@ -6,8 +6,6 @@ import (
 	"github.com/CentaurWarchief/heartbeat/ip"
 )
 
-// New creates a new tracker using the specified function to determine
-// if a host is still alive
 func New(isa IsConsideredAlive) *Tracker {
 	return &Tracker{
 		events:            make([]interface{}, 0),
@@ -15,13 +13,11 @@ func New(isa IsConsideredAlive) *Tracker {
 	}
 }
 
-// Tracker provides a simple API to track hosts
 type Tracker struct {
 	events            []interface{}
 	isConsideredAlive IsConsideredAlive
 }
 
-// IsHostBeingTracked tells if a host is being tracked
 func (t *Tracker) IsHostBeingTracked(host string) bool {
 	for _, event := range t.events {
 		switch event.(type) {
@@ -35,7 +31,6 @@ func (t *Tracker) IsHostBeingTracked(host string) bool {
 	return false
 }
 
-// ToPossiblyAlive returns a map of hosts which are possibly alive
 func (t *Tracker) ToPossiblyAlive() map[string]ip.InternalPublicPair {
 	m := make(map[string]ip.InternalPublicPair, 0)
 
@@ -59,7 +54,6 @@ func (t *Tracker) ToPossiblyAlive() map[string]ip.InternalPublicPair {
 	return m
 }
 
-// CountOfTracked returns the count of hosts being tracked
 func (t *Tracker) CountOfTracked() int {
 	count := 0
 
@@ -73,7 +67,6 @@ func (t *Tracker) CountOfTracked() int {
 	return count
 }
 
-// Track starts tracking a host with the following IP pair
 func (t *Tracker) Track(host string, ip ip.InternalPublicPair) {
 	t.events = append(t.events, HostWasTracked{
 		Host: host,
@@ -82,7 +75,6 @@ func (t *Tracker) Track(host string, ip ip.InternalPublicPair) {
 	})
 }
 
-// Ping registers a ping event from the host with given IP pair
 func (t *Tracker) Ping(host string, ip ip.InternalPublicPair) {
 	t.events = append(t.events, HostWasPinged{
 		Host: host,

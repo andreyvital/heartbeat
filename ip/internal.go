@@ -2,7 +2,6 @@ package ip
 
 import "net"
 
-// Internal returns the internal/local host IP address
 // http://stackoverflow.com/a/31551220
 func Internal() string {
 	addrs, err := net.InterfaceAddrs()
