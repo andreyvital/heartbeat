@@ -9,5 +9,5 @@ func NewInternalPublicPair(internal, public string) InternalPublicPair {
 
 type InternalPublicPair struct {
 	Internal string `json:"internal"`
-	Public   string `json:"public,omitempty"`
+	Public   string `json:"-"`
 }
