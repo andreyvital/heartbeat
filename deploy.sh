@@ -1,7 +1,19 @@
 #!/usr/bin/env bash
 if [ "$1" == "pi" ]; then
   make beat-arm
-  scp dist/beat_arm pi@$2:/home/pi/beat
+  tar -czvf beat.tar.gz beat/beat.sh dist/beat_arm
+  scp beat.tar.gz pi@$2:/home/pi
+  rm -rf beat.tar.gz
+  ssh pi@$2 <<'C'
+rm -rf ./beat
+tar -zxvf beat.tar.gz
+rm -f beat.tar.gz
+mv dist/beat_arm beat_arm && sudo mv beat/beat.sh /etc/init.d/beat
+rm -rf dist/ beat/
+mv beat_arm beat
+sudo chmod 755 /etc/init.d/beat
+sudo update-rc.d beat defaults
+C
   rm -rf dist/beat_arm
   exit
 fi
