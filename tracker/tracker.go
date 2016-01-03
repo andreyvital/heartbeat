@@ -74,6 +74,8 @@ func (t *Tracker) Track(host string, ip ip.InternalPublicPair) {
 	t.Lock()
 	defer t.Unlock()
 
+	t.events = t.collectGarbage(t.events)
+
 	t.events = append(t.events, HostWasTracked{
 		Host: host,
 		IP:   ip,
@@ -85,9 +87,28 @@ func (t *Tracker) Ping(host string, ip ip.InternalPublicPair) {
 	t.Lock()
 	defer t.Unlock()
 
+	t.events = t.collectGarbage(t.events)
+
 	t.events = append(t.events, HostWasPinged{
 		Host: host,
 		IP:   ip,
 		When: time.Now(),
 	})
+}
+
+func (t *Tracker) collectGarbage(events []interface{}) (keep []interface{}) {
+	for _, event := range events {
+		switch event.(type) {
+		case HostWasTracked:
+			keep = append(keep, event)
+		case HostWasPinged:
+			e := event.(HostWasPinged)
+
+			if t.isConsideredAlive(e.Host, e.When) {
+				keep = append(keep, event)
+			}
+		}
+	}
+
+	return keep
 }
