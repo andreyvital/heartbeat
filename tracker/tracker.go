@@ -1,6 +1,7 @@
 package tracker
 
 import (
+	"sync"
 	"time"
 
 	"github.com/CentaurWarchief/heartbeat/ip"
@@ -8,14 +9,16 @@ import (
 
 func New(isa IsConsideredAlive) *Tracker {
 	return &Tracker{
-		events:            make([]interface{}, 0),
-		isConsideredAlive: isa,
+		make([]interface{}, 0),
+		isa,
+		&sync.Mutex{},
 	}
 }
 
 type Tracker struct {
 	events            []interface{}
 	isConsideredAlive IsConsideredAlive
+	*sync.Mutex
 }
 
 func (t *Tracker) IsHostBeingTracked(host string) bool {
@@ -68,6 +71,9 @@ func (t *Tracker) CountOfTracked() int {
 }
 
 func (t *Tracker) Track(host string, ip ip.InternalPublicPair) {
+	t.Lock()
+	defer t.Unlock()
+
 	t.events = append(t.events, HostWasTracked{
 		Host: host,
 		IP:   ip,
@@ -76,6 +82,9 @@ func (t *Tracker) Track(host string, ip ip.InternalPublicPair) {
 }
 
 func (t *Tracker) Ping(host string, ip ip.InternalPublicPair) {
+	t.Lock()
+	defer t.Unlock()
+
 	t.events = append(t.events, HostWasPinged{
 		Host: host,
 		IP:   ip,
